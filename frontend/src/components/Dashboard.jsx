@@ -56,7 +56,7 @@ function Dashboard() {
     const age = urlParams.get("ageRange");
     const genderFilter = urlParams.get("gender");
 
-    const response = await axios.post("http://localhost:8000/api/bar-chart-data", {
+    const response = await axios.post("https://emailvisualizerbackend.onrender.com/api/bar-chart-data", {
       startDate,
       endDate,
       filters: [age, genderFilter], // Use filters from URL
@@ -78,7 +78,7 @@ function Dashboard() {
     const startDate = urlParams.get("startDate");
     const endDate = urlParams.get("endDate");
 
-    const response = await axios.post("http://localhost:8000/api/line-chart-data", {
+    const response = await axios.post("https://emailvisualizerbackend.onrender.com/api/line-chart-data", {
       feature,
       startDate,
       endDate,
