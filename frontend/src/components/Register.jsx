@@ -20,7 +20,7 @@ function Register() {
                 email:email,
                 password:password
             };
-            const res = await axios.post('http://localhost:8000/api/register',formData);
+            const res = await axios.post('https://emailvisualizerbackend.onrender.com/api/register',formData);
             alert("Account Created Successfully");
             navigate('/login');
         }catch(err){
