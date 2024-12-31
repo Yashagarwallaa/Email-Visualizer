@@ -20,7 +20,7 @@ function Login() {
                 email:email,
                 password:password
             };
-            const res = await axios.post('http://localhost:8000/api/login',formData);
+            const res = await axios.post('https://emailvisualizerbackend.onrender.com/api/login',formData);
             alert("Login was Successfully");
             const token = res.data.token;
             localStorage.setItem('token',token);
