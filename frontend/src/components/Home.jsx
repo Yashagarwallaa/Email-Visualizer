@@ -6,6 +6,7 @@ const Home = () => {
   const [emailBody, setEmailBody] = useState(null);
   const [filter, setFilter] = useState('all');
   const [favoriteEmails, setFavoriteEmails] = useState([]);
+  const [readEmails, setReadEmails] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -15,18 +16,27 @@ const Home = () => {
     accent: '#E54065'
   };
 
-  // Load favorites from localStorage on mount
+  // Load favorites and read emails from localStorage on mount
   useEffect(() => {
     const savedFavorites = localStorage.getItem('favoriteEmails');
+    const savedReadEmails = localStorage.getItem('readEmails');
+    
     if (savedFavorites) {
       setFavoriteEmails(JSON.parse(savedFavorites));
     }
+    if (savedReadEmails) {
+      setReadEmails(JSON.parse(savedReadEmails));
+    }
   }, []);
 
-  // Save favorites to localStorage whenever they change
+  // Save favorites and read emails to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem('favoriteEmails', JSON.stringify(favoriteEmails));
   }, [favoriteEmails]);
+
+  useEffect(() => {
+    localStorage.setItem('readEmails', JSON.stringify(readEmails));
+  }, [readEmails]);
 
   // Fetch emails when page changes
   useEffect(() => {
@@ -47,6 +57,10 @@ const Home = () => {
 
   const handleEmailClick = async (email) => {
     setSelectedEmail(email);
+    // Mark email as read when clicked
+    if (!readEmails.includes(email.id)) {
+      setReadEmails(prev => [...prev, email.id]);
+    }
     try {
       const response = await fetch(`https://flipkart-email-mock.now.sh/?id=${email.id}`);
       const data = await response.json();
@@ -79,8 +93,8 @@ const Home = () => {
 
   const filteredEmails = emails.filter(email => {
     if (filter === 'favorites') return favoriteEmails.includes(email.id);
-    if (filter === 'read') return selectedEmail?.id === email.id;
-    if (filter === 'unread') return selectedEmail?.id !== email.id;
+    if (filter === 'read') return readEmails.includes(email.id);
+    if (filter === 'unread') return !readEmails.includes(email.id);
     return true;
   });
 
@@ -91,7 +105,7 @@ const Home = () => {
     gap: '10px',
     marginTop: '20px',
     marginBottom: '20px',
-    width:'10%'
+    width: '10%'
   };
 
   const pageButtonStyle = (isActive) => ({
@@ -193,13 +207,19 @@ const Home = () => {
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ marginBottom: '5px' }}>
                     <span style={{ color: colors.text }}>From: </span>
-                    <span style={{ color: colors.text, fontWeight: 'bold' }}>
+                    <span style={{ 
+                      color: colors.text, 
+                      fontWeight: 'bold'
+                    }}>
                       {email.from.name} {`<${email.from.email}>`}
                     </span>
                   </div>
                   <div style={{ marginBottom: '5px' }}>
                     <span style={{ color: colors.text }}>Subject: </span>
-                    <span style={{ color: colors.text, fontWeight: 'bold' }}>
+                    <span style={{ 
+                      color: colors.text, 
+                      fontWeight: 'bold'
+                    }}>
                       {email.subject}
                     </span>
                   </div>
